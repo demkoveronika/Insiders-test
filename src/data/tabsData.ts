@@ -1,0 +1,15 @@
+export const tabs = [
+  { name: "Dashboard", href: "#dashboard" },
+  { name: "Banking", href: "#banking" },
+  { name: "Telefonie", href: "#telefonie" },
+  { name: "Accounting", href: "#accounting" },
+  { name: "Verkauf", href: "#verkauf" },
+  { name: "Statistik", href: "#statistik" },
+  { name: "Post Office", href: "#post-office" },
+  { name: "Administration", href: "#administration" },
+  { name: "Help", href: "#help" },
+  { name: "Warenbestand", href: "#warenbestand" },
+  { name: "Auswahllisten", href: "#auswahllisten" },
+  { name: "Einkauf", href: "#einkauf" },
+  { name: "Rechn", href: "#rechn" },
+];

@@ -1,87 +1,27 @@
-import Image from "next/image";
+import { useTabs } from "@/hooks/useTabs";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { tabs } from "@/data/tabsData";
+
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { DropResult } from "react-beautiful-dnd";
 
+import Image from "next/image";
+
 const TabList: React.FC = () => {
-  const tabs = [
-    { name: "Dashboard", href: "#dashboard" },
-    { name: "Banking", href: "#banking" },
-    { name: "Telefonie", href: "#telefonie" },
-    { name: "Accounting", href: "#accounting" },
-    { name: "Verkauf", href: "#verkauf" },
-    { name: "Statistik", href: "#statistik" },
-    { name: "Post Office", href: "#post-office" },
-    { name: "Administration", href: "#administration" },
-    { name: "Help", href: "#help" },
-    { name: "Warenbestand", href: "#warenbestand" },
-    { name: "Auswahllisten", href: "#auswahllisten" },
-    { name: "Einkauf", href: "#einkauf" },
-    { name: "Rechn", href: "#rechn" },
-  ];
-
-  const [activeTabs, setActiveTabs] = useState<string[]>([]);
-  const [pinnedTabs, setPinnedTabs] = useState<string[]>([]);
-  const [addTabStatus, setAddTabStatus] = useState(false);
   const [contextMenuTab, setContextMenuTab] = useState<string | null>(null);
-  const [menuPosition, setMenuPosition] = useState<{
-    top: number;
-    left: number;
-  }>({ top: 0, left: 0 });
   const router = useRouter();
-
-  useEffect(() => {
-    const savedActiveTabs = localStorage.getItem("activeTabs");
-    const savedPinnedTabs = localStorage.getItem("pinnedTabs");
-
-    if (savedActiveTabs) {
-      setActiveTabs(JSON.parse(savedActiveTabs));
-    }
-    if (savedPinnedTabs) {
-      setPinnedTabs(JSON.parse(savedPinnedTabs));
-    }
-  }, []);
-
-  useEffect(() => {
-    if (activeTabs.length > 0) {
-      localStorage.setItem("activeTabs", JSON.stringify(activeTabs));
-    } else {
-      localStorage.removeItem("activeTabs");
-    }
-    if (pinnedTabs.length > 0) {
-      localStorage.setItem("pinnedTabs", JSON.stringify(pinnedTabs));
-    } else {
-      localStorage.removeItem("pinnedTabs");
-    }
-  }, [activeTabs, pinnedTabs]);
-
-  const addTab = (tab: string) => {
-    if (
-      activeTabs.length + pinnedTabs.length < 10 &&
-      !activeTabs.includes(tab) &&
-      !pinnedTabs.includes(tab)
-    ) {
-      setActiveTabs((prevTabs) => [...prevTabs, tab]);
-      setAddTabStatus(false);
-    }
-  };
-
-  const removeTab = (tab: string) => {
-    setActiveTabs((prevTabs) => prevTabs.filter((t) => t !== tab));
-  };
-
-  const pinTab = (tab: string) => {
-    if (!pinnedTabs.includes(tab)) {
-      setActiveTabs((prevTabs) => prevTabs.filter((t) => t !== tab));
-      setPinnedTabs((prev) => [tab, ...prev]);
-    }
-  };
-
-  const unpinTab = (tab: string) => {
-    setPinnedTabs((prev) => prev.filter((t) => t !== tab));
-    addTab(tab);
-  };
+  const {
+    activeTabs,
+    setActiveTabs,
+    pinnedTabs,
+    addTabStatus,
+    addTab,
+    removeTab,
+    pinTab,
+    unpinTab,
+    setAddTabStatus,
+  } = useTabs();
 
   const handleTabClick = (href: string) => {
     router.push(href, undefined, { shallow: true });
@@ -97,14 +37,7 @@ const TabList: React.FC = () => {
 
   const handleContextMenu = (tab: string, event: React.MouseEvent) => {
     event.preventDefault();
-
-    const { clientX, clientY } = event;
-
     setContextMenuTab(tab);
-    setMenuPosition({
-      top: clientY + 20,
-      left: clientX + 6,
-    });
   };
 
   return (
@@ -217,10 +150,31 @@ const TabList: React.FC = () => {
                                 alt="delete"
                                 width={16}
                                 height={16}
-                                className="ml-[7px] cursor-pointer"
+                                className="cursor-pointer ml-[7px]"
                               />
                             </button>
                           )}
+
+                          {contextMenuTab &&
+                            router.asPath.includes(
+                              tabs.find((t) => t.name === tab)?.href ?? ""
+                            ) && (
+                              <div>
+                                {!pinnedTabs.includes(contextMenuTab) && (
+                                  <button
+                                    onClick={() => pinTab(contextMenuTab)}
+                                    className="w-full flex items-center hover:bg-gray-100 ml-[7px]"
+                                  >
+                                    <Image
+                                      src="img/anpinnen.svg"
+                                      alt="pin"
+                                      width={16}
+                                      height={16}
+                                    />
+                                  </button>
+                                )}
+                              </div>
+                            )}
                         </div>
                       )}
                     </Draggable>
@@ -274,32 +228,6 @@ const TabList: React.FC = () => {
                 </li>
               ))}
           </ul>
-        )}
-
-        {contextMenuTab && (
-          <div
-            className="absolute bg-white shadow-md w-[155] z-10 border border-[#AEB6CE33]"
-            style={{
-              top: `${menuPosition.top}px`,
-              left: `${menuPosition.left}px`,
-            }}
-          >
-            {!pinnedTabs.includes(contextMenuTab) && (
-              <button
-                onClick={() => pinTab(contextMenuTab)}
-                className="w-full px-4 py-2 flex items-center text-[#4690E2] hover:bg-gray-100"
-              >
-                <Image
-                  src="img/anpinnen.svg"
-                  alt="pin"
-                  width={16}
-                  height={16}
-                  className="mr-[10px]"
-                />
-                Tab anpinnen
-              </button>
-            )}
-          </div>
         )}
 
         <div className="h-[610px] bg-white border-20 border-[#F4F7F9]" />
