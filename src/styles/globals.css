@@ -16,4 +16,5 @@
 
 body {
   background: var(--background);
+  overflow-y: hidden;
 }
