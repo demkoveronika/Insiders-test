@@ -32,7 +32,7 @@ const TabList: React.FC = () => {
       <div className="w-[62px] bg-[#FFFFFF]" />
 
       <div className="flex-1 relative">
-        <div className="w-full h-[69px] border border-b-[#AEB6CE33]"></div>
+        <div className="w-full h-[69px] border border-[#AEB6CE33]"></div>
 
         <div className="flex items-center space-x-4">
           <div className="px-[20px] py-[16px] m-0">
@@ -78,7 +78,7 @@ const TabList: React.FC = () => {
         </div>
 
         {addTabStatus && (
-          <ul className="bg-white shadow-md rounded-md w-60 absolute right-0 top-29 z-10 border border-bg-[#AEB6CE33]">
+          <ul className="bg-white shadow-md rounded-md w-60 absolute right-0 top-29 z-10 border border-[#AEB6CE33]">
             {tabs
               .filter((tab) => !activeTabs.includes(tab))
               .map((tab, index) => (
@@ -101,7 +101,7 @@ const TabList: React.FC = () => {
               ))}
           </ul>
         )}
-        <div className="h-[610px] bg-white border-20 border-bg-[#F1F5F8]" />
+        <div className="h-[610px] bg-white border-20 border-[#F4F7F9]" />
       </div>
     </div>
   );
